@@ -1,0 +1,29 @@
+{
+  "easy": [
+    {
+      "id": "1",
+      "title": "Two Sum",
+      "description": "Given an array of integers, find two numbers such that they add up to a specific target number.",
+      "topics": ["arrays", "hashing"],
+      "expected_output": "1 2 3 4 5"
+    }
+  ],
+  "medium": [
+    {
+      "id": "2",
+      "title": "Add Two Numbers",
+      "description": "You are given two non-empty linked lists representing two non-negative integers.",
+      "topics": ["linked lists", "math"],
+      "expected_output": "1 2 3 4 5"
+    }
+  ],
+  "hard":[
+    {
+      "id":"3",
+      "title":"Hard Question",
+      "description":"TODO",
+      "topics":["todo"],
+      "expected_output":"12345"
+    }
+  ]
+}
