@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cjson/cJSON.h>
+#include"../include/utils.h"
 #include<gtk/gtk.h>
 
 char* read_file(const char* filename) {

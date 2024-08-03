@@ -1,7 +1,14 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<pthread.h>
 #include "../include/utils.h"
+
+void* window_thread_func(void* arg) {
+    const char* filename = (const char*)arg;
+    display_json_in_window(filename, "easy");
+    return NULL;
+}
 
 void setup_env(const char *env)
 {
@@ -20,7 +27,10 @@ int main(int argc, char *argv[])
     setup_env(argv[2]);
   }else if(strcmp(argv[1],"solve")==0 && argc==3){
     solve_problem(argv[2]);
-    display_json_in_window(filename, argv[2]);
+    pthread_t window_thread;
+    pthread_create(&window_thread, NULL, window_thread_func, (void*)filename);
+    countdown_timer();
+    pthread_join(window_thread, NULL);
   }else{
     printf("Unknown Command:%s \n",argv[1]);
   }
