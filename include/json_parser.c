@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cjson/cJSON.h>
-#include"../include/utils.h"
-#include<gtk/gtk.h>
+#include "../include/utils.h"
+#include <gtk/gtk.h>
 
 char* read_file(const char* filename) {
     FILE* file = fopen(filename, "rb");
@@ -30,7 +30,7 @@ void print_problem_details(cJSON* problem) {
     cJSON* id = cJSON_GetObjectItemCaseSensitive(problem, "id");
     cJSON* title = cJSON_GetObjectItemCaseSensitive(problem, "title");
     cJSON* description = cJSON_GetObjectItemCaseSensitive(problem, "description");
-    cJSON* expected_output=cJSON_GetObjectItemCaseSensitive(problem,"expected_output");
+    cJSON* expected_output = cJSON_GetObjectItemCaseSensitive(problem, "expected_output");
 
     if (cJSON_IsString(id) && (id->valuestring != NULL)) {
         printf("ID: %s\n", id->valuestring);
