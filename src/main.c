@@ -6,7 +6,7 @@
 
 void* window_thread_func(void* arg) {
     const char* filename = (const char*)arg;
-    display_json_in_window(filename, "easy");
+    display_json_in_window_with_timer(filename, "easy");
     return NULL;
 }
 
@@ -36,8 +36,6 @@ int main(int argc, char *argv[]) {
             perror("Failed to create window thread");
             return 1;
         }
-
-        countdown_timer();
 
         if (pthread_join(window_thread, NULL) != 0) {
             perror("Failed to join window thread");

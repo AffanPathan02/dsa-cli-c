@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cjson/cJSON.h>
-#include "../include/utils.h"
 #include <gtk/gtk.h>
+#include "../include/utils.h"
+
+GtkWidget *timer_label;
 
 char* read_file(const char* filename) {
     FILE* file = fopen(filename, "rb");
@@ -46,7 +48,22 @@ void print_problem_details(cJSON* problem) {
     }
 }
 
-void display_json_in_window(const char* filename, const char* difficulty) {
+gboolean update_timer(gpointer data) {
+    static int seconds = 60;
+    if (seconds <= 0) {
+        gtk_label_set_text(GTK_LABEL(timer_label), "Time's Up!");
+        return FALSE; 
+    }
+    int m = (seconds % 3600) / 60;
+    int s = seconds % 60;
+    char buffer[16];
+    snprintf(buffer, sizeof(buffer), "%02d:%02d", m, s);
+    gtk_label_set_text(GTK_LABEL(timer_label), buffer);
+    seconds--;
+    return TRUE; 
+}
+
+void display_json_in_window_with_timer(const char* filename, const char* difficulty) {
     
     char* json_content = read_file(filename);
     if (json_content == NULL) {
@@ -71,17 +88,23 @@ void display_json_in_window(const char* filename, const char* difficulty) {
     gtk_init(NULL, NULL);
     
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(window), "JSON Problems");
+    gtk_window_set_title(GTK_WINDOW(window), "JSON Problems with Timer");
     gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
+    
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_container_add(GTK_CONTAINER(window), vbox);
     
     GtkWidget *text_view = gtk_text_view_new();
     gtk_text_view_set_editable(GTK_TEXT_VIEW(text_view), FALSE);
     gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text_view), FALSE);
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
-
+    
     GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_container_add(GTK_CONTAINER(scrolled_window), text_view);
-    gtk_container_add(GTK_CONTAINER(window), scrolled_window);
+    gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
+    
+    timer_label = gtk_label_new("01:00");
+    gtk_box_pack_start(GTK_BOX(vbox), timer_label, FALSE, FALSE, 0);
     
     GString *output = g_string_new("");
     
@@ -111,9 +134,11 @@ void display_json_in_window(const char* filename, const char* difficulty) {
     g_string_free(output, TRUE);
     
     gtk_widget_show_all(window);
+
+    g_timeout_add_seconds(1, update_timer, NULL);
     
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-
+    
     gtk_main();
 
     cJSON_Delete(json);
